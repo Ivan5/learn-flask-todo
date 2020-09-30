@@ -24,9 +24,7 @@
     </nav>
     <section class="content">
       <header>{% block header %}{% endblock %}</header>
-      {% for message in get_flash_messages() %}
-      <div class="flash">{{message}}</div>
-      {% endfor%} {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
     </section>
   </body>
 </html>
