@@ -16,4 +16,31 @@ def index():
     'select t.id, t.description,u.username, t.completed, t.created_at from todo t JOIN user u on t.created_by = u.id order by created_at desc'
   )
   todos = c.fetchall()
-  return render_template('todo/index.html', todos=todo)
+  return render_template('todo/index.html', todos=todos)
+
+@bp.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+  if request.method == 'POST':
+    description = request.form['description']
+    error = None
+
+
+    if not description:
+      error = 'Descripcion es requerida'
+    if error is not None:
+      flash(error)
+    else:
+      db, c = get_db()
+      c.execute(
+        'insert into todo (description, completed, created_by) values (%s,%s,%s)',(description,False,g.user['id'])
+      )
+      db.commit()
+      return redirect(url_for('todo.index'))
+      
+  return render_template('todo/create.html')
+
+@bp.route('/update', methods=['GET', 'POST'])
+@login_required
+def update():
+  return ''

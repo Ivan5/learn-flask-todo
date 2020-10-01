@@ -39,7 +39,7 @@ def login():
     password = request.form['password']
     db, c = get_db()
     error = None
-    c.execute('select * from user where username = %s', (username))
+    c.execute('select * from user where username = %s', (username,))
     user = c.fetchone()
 
     if user is None:
@@ -68,8 +68,13 @@ def load_logged_in_user():
 
 def login_required(view):
   @functools.wraps(view)
-  def wrapped_view(**kwargs):
+  def wrapped_view(**kargs):
     if g.user is None:
       return redirect(url_for('auth.login'))
     return view(**kargs)
   return wrapped_view
+
+@bp.route('/logout')
+def logout():
+  session.clear()
+  return redirect(url_for('login'))
